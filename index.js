@@ -37,6 +37,38 @@ app.post("/api/users/register", async (req, res) => {
   }
 });
 
+app.post("/api/user/login", (req, res) => {
+  try {
+    //Check if Email Exists
+    User.findOne({ email: req.body.email }, (err, user) => {
+      if (!user) {
+        return res.json({
+          success: false,
+          message: "Authentaication failed,Email Not Found !!",
+        });
+      }
+
+      user.checkpassword(req.body.password, (err, isMatch) => {
+        if (!isMatch) {
+          return res.json({ success: false, message: "Password Incorrect" });
+        } else {
+          user.generatetoken((err, user) => {
+            if (err) {
+              return res.status(400).send(err);
+            }
+            res
+              .cookie("x_auth", user.token)
+              .status(200)
+              .json({ loginSuccess: true });
+          });
+        }
+      });
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
