@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { User } = require("./model/user");
 const { mongoURI } = require("./config/key");
+const { auth } = require("./middleware/auth");
 const port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
@@ -23,6 +24,18 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send("Hello k$hah");
+});
+
+app.get("/api/user/auth", auth, (req, res) => {
+  res.status(200).json({
+    isAuth: true,
+    error: false,
+    _id: req._id,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+  });
 });
 
 app.post("/api/users/register", async (req, res) => {
