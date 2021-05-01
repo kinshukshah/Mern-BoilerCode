@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const { User } = require("./model/user");
 const { mongoURI } = require("./config/key");
 const { auth } = require("./middleware/auth");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
